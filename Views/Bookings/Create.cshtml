@@ -1,0 +1,121 @@
+﻿@model BrtfProject.Models.Booking
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create New Booking</h1>
+
+@*<h4>Booking</h4>*@
+<hr />
+<h4 class="text-primary">@ViewData["msg"]</h4>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+            @*<div class="form-group" >
+                    <label asp-for="UserId" class="control-label"></label>
+                    <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId">
+                        <option value="">Select User</option>
+                    </select>
+                    <span asp-validation-for="UserId" class="text-danger"></span>
+                </div>*@
+
+        <div class="form-group">
+            <label asp-for="Area" class="control-label"></label>
+            <select asp-for="AreaId" class="form-control" asp-items="ViewBag.AreaId">
+                <option value="">Select Area  </option>
+
+            </select>
+            @*<p>   <span class="required">*</span> Required field</p>*@
+
+        </div>
+
+            <div class="form-group">
+                <label asp-for="RoomID" class="control-label"></label>
+                <select asp-for="RoomID" class="form-control" asp-items="ViewBag.RoomID">
+                    <option value="">Select Room</option>
+                </select>
+                <span asp-validation-for="RoomID" class="text-danger"></span>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div class="form-group">
+                <label asp-for="SpecialNote" class="control-label"></label>
+                <textarea asp-for="SpecialNote" class="form-control"> </textarea>
+                <span asp-validation-for="SpecialNote" class="text-danger"></span>
+            </div>
+
+
+
+            <div class="form-group">
+                <label asp-for="StartdateTime" class="control-label"></label>
+                @*<input type="date" id="input" />*@
+
+                <input asp-for="StartdateTime" id="form-control" />
+                <span asp-validation-for="StartdateTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndDateTime" id="control-label"></label>
+                @*<input type="date" id="input" />*@
+                <input asp-for="EndDateTime" class="form-control" />
+                <span asp-validation-for="EndDateTime" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/refreshDDL.js"></script>
+    <script type="text/javascript">
+        $('#AreaId').change(function () {
+            var selectedArea = $("#AreaId").val();
+            var URL = "/Bookings/GetRooms/" + selectedArea;
+            refreshDDL('RoomID', URL, true);
+        });
+    </script>
+
+
+                <script>
+                    //Get today date
+                    let date = new Date()
+                    let day = date.getDate();
+                    let month = date.getMonth() + 1;
+                    let year = date.getFullYear(); let fullDate = year + '-0' + month + '-' + day;
+                    console.log(fullDate);
+
+
+
+
+                    document.getElementById('form-control').setAttribute("min", fullDate);
+                </script>
+
+
+
+
+}
+

@@ -1,0 +1,162 @@
+﻿@model IEnumerable<BrtfProject.Models.Booking>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Bookings</h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Make a Booking</a>
+
+    @if (User.IsInRole("Super-Admin"))
+    {
+        <a asp-action="DownloadBooking" class="btn btn-info float-right">Download Booking Report</a>
+
+    }
+</p>
+
+
+
+
+<form asp-action="Index" method="get">
+
+
+
+
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    <div class="form-horizontal">
+        <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" id="filterToggle" data-target="#collapseFilterSearch" aria-expanded="false" aria-controls="collapseFilter">
+            Filter/Search
+        </button>
+        <div class="collapse @(ViewData["Filtering"])" id="collapseFilterSearch">
+            <div class="card card-body bg-light">
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label class="control-label">Select by User:</label>
+                        @Html.DropDownList("UserId", null, "All Users", htmlAttributes: new { @class = "form-control" })
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="control-label">Select by Area:</label>
+                        @Html.DropDownList("AreaId", null, "All Areas", htmlAttributes: new { @class = "form-control" })
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="control-label">Select by Room:</label>
+                        @Html.DropDownList("RoomID", null, "All Rooms", htmlAttributes: new { @class = "form-control" })
+                    </div>
+                   
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                       
+                        <label class="control-label">Select Start date:</label>
+                        <input id="StartdateTime" name="StartdateTime" type="datetime-local" value="@ViewBag.Startdatetime" class="form-control" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="control-label">Select End date:</label>
+                        <input id="EndDateTime" name="EndDateTime" type="datetime-local" value="@ViewBag.EndDateTime" class="form-control" />
+                    </div>
+                    <div class="form-group col-md-4 align-self-end">
+                        <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
+                        <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+                    </div>
+                </div>
+                </div>
+            </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <input type="submit" name="actionButton" value="User" class="btn btn-link" />
+                </th>
+
+                <th>
+                    <input type="submit" name="actionButton" value="Area" class="btn btn-link" />
+                </th>
+                <th>
+                    <input type="submit" name="actionButton" value="Room" class="btn btn-link" />
+                </th>
+
+
+
+                <th>
+                    <input disabled="disabled" type="submit" name="actionButton" value="SpecialNote" class="btn btn-link" />
+
+                </th>
+                <th>
+                    <input type="submit" name="actionButton" value="StartdateTime" class="btn btn-link" />
+
+                </th>
+                <th>
+                    <input type="submit" name="actionButton" value="EndDateTime" class="btn btn-link" />
+
+                </th>
+
+
+
+
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.User.Email)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Area.AreaName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Area.Rooms.ToList()[0].name)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SpecialNote)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartdateTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EndDateTime)
+                    </td>
+
+
+
+
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID"><span class="btn btn-sm btn-outline-primary">Edit</span></a>
+
+
+                        <a asp-action="Details" asp-route-id="@item.ID"><span class="btn btn-sm btn-outline-primary">Details</span></a>
+
+
+                        <a asp-action="Delete" asp-route-id="@item.ID"><span class="btn btn-sm btn-outline-primary">Delete</span></a>                    
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavBar" />
+
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/refreshDDL.js"></script>
+    <script type="text/javascript">
+        $('#AreaId').change(function () {
+            var selectedArea = $("#AreaId").val();
+            var URL = "/Bookings/GetRooms/" + selectedArea;
+            refreshDDL('RoomID', URL, true);
+        });
+    </script>
+
+}
+
+
